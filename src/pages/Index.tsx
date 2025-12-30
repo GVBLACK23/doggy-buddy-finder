@@ -1,13 +1,33 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import HeroSection from "@/components/home/HeroSection";
+import HowItWorksSection from "@/components/home/HowItWorksSection";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
+import CTASection from "@/components/home/CTASection";
+import { Helmet } from "react-helmet";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <>
+      <Helmet>
+        <title>Dirija.ja - Encontre Instrutores de Direção Qualificados</title>
+        <meta 
+          name="description" 
+          content="Conectamos você com instrutores de direção qualificados e experientes. Agende aulas práticas e conquiste sua CNH com confiança!" 
+        />
+      </Helmet>
+      
+      <div className="min-h-screen">
+        <Header />
+        <main>
+          <HeroSection />
+          <HowItWorksSection />
+          <TestimonialsSection />
+          <CTASection />
+        </main>
+        <Footer />
       </div>
-    </div>
+    </>
   );
 };
 

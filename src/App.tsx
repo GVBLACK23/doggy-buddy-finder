@@ -7,6 +7,8 @@ import Index from "./pages/Index";
 import SearchPage from "./pages/SearchPage";
 import InstructorProfilePage from "./pages/InstructorProfilePage";
 import AuthPage from "./pages/AuthPage";
+import ProfileSelectionPage from "./pages/ProfileSelectionPage";
+import InstructorRegistrationPage from "./pages/InstructorRegistrationPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -19,6 +21,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/selecionar-perfil" element={<ProfileSelectionPage />} />
+          <Route path="/cadastro-instrutor" element={<InstructorRegistrationPage />} />
           <Route path="/buscar" element={<SearchPage />} />
           <Route path="/instrutor/:id" element={<InstructorProfilePage />} />
           <Route path="/auth" element={<AuthPage />} />

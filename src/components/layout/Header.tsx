@@ -35,7 +35,7 @@ const Header = () => {
               Como Funciona
             </a>
             <Link 
-              to="/seja-instrutor" 
+              to="/selecionar-perfil" 
               className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
               Seja Instrutor
@@ -88,7 +88,7 @@ const Header = () => {
                 Como Funciona
               </a>
               <Link 
-                to="/seja-instrutor" 
+                to="/selecionar-perfil" 
                 className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >

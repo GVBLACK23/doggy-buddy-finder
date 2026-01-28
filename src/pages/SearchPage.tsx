@@ -106,6 +106,8 @@ const SearchPage = () => {
     minRating: 0,
     transmission: [],
     hasCarForTest: null,
+    femaleInstructorOnly: false,
+    lessonObjective: null,
   });
 
   const filteredInstructors = mockInstructors.filter((instructor) => {
@@ -225,6 +227,8 @@ const SearchPage = () => {
                       minRating: 0,
                       transmission: [],
                       hasCarForTest: null,
+                      femaleInstructorOnly: false,
+                      lessonObjective: null,
                     })}>
                       Limpar filtros
                     </Button>

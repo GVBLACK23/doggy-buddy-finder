@@ -16,8 +16,15 @@ import {
   MessageSquare,
   ChevronLeft,
   Check,
+  Sparkles,
+  Snowflake,
+  Gauge,
+  Settings,
+  CheckCircle,
 } from "lucide-react";
 import { Helmet } from "react-helmet";
+import PraiseTags from "@/components/instructor/PraiseTags";
+import TrustBadges from "@/components/instructor/TrustBadges";
 
 // Mock data - will be replaced with real data
 const mockInstructor = {
@@ -27,6 +34,7 @@ const mockInstructor = {
   rating: 4.9,
   reviewCount: 127,
   pricePerHour: 85,
+  trialPrice: 49,
   categories: ["B"],
   transmission: "Manual",
   hasCarForTest: true,
@@ -35,14 +43,24 @@ const mockInstructor = {
   experience: 8,
   bio: "Instrutor de direção há 8 anos, com mais de 500 alunos aprovados. Especializado em ensinar de forma calma e paciente, ideal para quem está começando ou tem medo de dirigir.",
   vehicles: [
-    { model: "Chevrolet Onix 2023", type: "Manual" },
-    { model: "Volkswagen Polo 2022", type: "Automático" },
+    { 
+      model: "Chevrolet Onix 2023", 
+      type: "Manual",
+      features: { airConditioning: true, powerSteering: true, dualCommand: true, inspected: true }
+    },
+    { 
+      model: "Volkswagen Polo 2022", 
+      type: "Automático",
+      features: { airConditioning: true, powerSteering: true, dualCommand: true, inspected: true }
+    },
   ],
   packages: [
+    { name: "Aula Experimental", hours: 1, price: 49, isTrialLesson: true },
     { name: "Aula avulsa", hours: 1, price: 85 },
     { name: "Pacote 5 aulas", hours: 5, price: 380, discount: 10 },
     { name: "Pacote 10 aulas", hours: 10, price: 680, discount: 20 },
   ],
+  praiseTags: ["Muita Paciência", "Pontual", "Deixa Calmo", "Carro Limpo", "Didático"],
   reviews: [
     {
       id: "1",
@@ -103,6 +121,15 @@ const InstructorProfilePage = () => {
             <div className="grid lg:grid-cols-3 gap-8">
               {/* Main Content */}
               <div className="lg:col-span-2 space-y-6">
+                {/* Trust Badges - Verification Section */}
+                <div className="bg-secondary/10 p-4 rounded-2xl border border-secondary/20">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Shield className="w-5 h-5 text-primary" />
+                    <span className="font-display font-semibold text-sm">Verificação Dirija.ja</span>
+                  </div>
+                  <TrustBadges />
+                </div>
+
                 {/* Header Card */}
                 <div className="bg-card p-6 md:p-8 rounded-2xl border border-border">
                   <div className="flex flex-col md:flex-row gap-6">
@@ -140,6 +167,11 @@ const InstructorProfilePage = () => {
                             </span>
                           </div>
                         </div>
+                      </div>
+
+                      {/* Praise Tags */}
+                      <div className="mt-4">
+                        <PraiseTags tags={instructor.praiseTags} />
                       </div>
 
                       {/* Stats */}
@@ -218,16 +250,47 @@ const InstructorProfilePage = () => {
                       {instructor.vehicles.map((vehicle, index) => (
                         <div
                           key={index}
-                          className="flex items-center gap-4 p-4 bg-muted/50 rounded-xl"
+                          className="p-4 bg-muted/50 rounded-xl border border-border"
                         >
-                          <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center">
-                            <Car className="w-6 h-6 text-secondary" />
+                          <div className="flex items-center gap-4 mb-3">
+                            <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center">
+                              <Car className="w-6 h-6 text-secondary" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <p className="font-medium">{vehicle.model}</p>
+                                {vehicle.features.inspected && (
+                                  <div className="flex items-center gap-1 bg-green-light/10 text-green-light px-2 py-0.5 rounded-full text-xs font-medium">
+                                    <CheckCircle className="w-3 h-3" />
+                                    Vistoriado
+                                  </div>
+                                )}
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                Câmbio {vehicle.type}
+                              </p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="font-medium">{vehicle.model}</p>
-                            <p className="text-sm text-muted-foreground">
-                              Câmbio {vehicle.type}
-                            </p>
+                          {/* Vehicle Features */}
+                          <div className="flex flex-wrap gap-2">
+                            {vehicle.features.airConditioning && (
+                              <Badge variant="outline" className="text-xs">
+                                <Snowflake className="w-3 h-3 mr-1" />
+                                Ar Condicionado
+                              </Badge>
+                            )}
+                            {vehicle.features.powerSteering && (
+                              <Badge variant="outline" className="text-xs">
+                                <Gauge className="w-3 h-3 mr-1" />
+                                Dir. Hidráulica
+                              </Badge>
+                            )}
+                            {vehicle.features.dualCommand && (
+                              <Badge variant="outline" className="text-xs">
+                                <Settings className="w-3 h-3 mr-1" />
+                                Duplo Comando
+                              </Badge>
+                            )}
                           </div>
                         </div>
                       ))}
@@ -283,24 +346,43 @@ const InstructorProfilePage = () => {
                       <button
                         key={index}
                         onClick={() => setSelectedPackage(index)}
-                        className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                          selectedPackage === index
-                            ? "border-primary bg-primary/5"
-                            : "border-border hover:border-primary/50"
+                        className={`w-full p-4 rounded-xl border-2 text-left transition-all relative ${
+                          pkg.isTrialLesson
+                            ? selectedPackage === index
+                              ? "border-primary bg-primary/10 ring-2 ring-primary/20"
+                              : "border-primary/50 bg-primary/5 hover:border-primary"
+                            : selectedPackage === index
+                              ? "border-primary bg-primary/5"
+                              : "border-border hover:border-primary/50"
                         }`}
                       >
+                        {pkg.isTrialLesson && (
+                          <div className="absolute -top-2 left-4 bg-primary text-primary-foreground text-xs font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <Sparkles className="w-3 h-3" />
+                            Recomendado
+                          </div>
+                        )}
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="font-medium">{pkg.name}</p>
+                            <p className={`font-medium ${pkg.isTrialLesson ? "text-primary" : ""}`}>
+                              {pkg.name}
+                            </p>
                             <p className="text-sm text-muted-foreground">
                               {pkg.hours} {pkg.hours === 1 ? "hora" : "horas"}
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="font-bold">R$ {pkg.price}</p>
+                            <p className={`font-bold ${pkg.isTrialLesson ? "text-primary" : ""}`}>
+                              R$ {pkg.price}
+                            </p>
                             {pkg.discount && (
                               <p className="text-xs text-green-light">
                                 -{pkg.discount}%
+                              </p>
+                            )}
+                            {pkg.isTrialLesson && (
+                              <p className="text-xs text-green-light font-medium">
+                                Preço especial
                               </p>
                             )}
                           </div>
@@ -329,6 +411,17 @@ const InstructorProfilePage = () => {
                   <Button className="w-full h-12 text-base font-semibold">
                     Agendar Aula
                   </Button>
+
+                  {/* Guarantee Micro-copy */}
+                  <div className="mt-4 p-3 bg-muted/50 rounded-xl border border-border">
+                    <div className="flex items-start gap-2">
+                      <Shield className="w-5 h-5 text-green-light flex-shrink-0 mt-0.5" />
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        <span className="font-semibold text-foreground">Garantia de Química:</span>{" "}
+                        Se não se adaptar na 1ª aula, trocamos seu instrutor gratuitamente.
+                      </p>
+                    </div>
+                  </div>
 
                   <Button variant="outline" className="w-full mt-3">
                     <MessageSquare className="w-4 h-4 mr-2" />

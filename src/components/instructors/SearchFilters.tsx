@@ -3,7 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Filter, X } from "lucide-react";
+import { Filter, X, Target, Heart } from "lucide-react";
 
 interface SearchFiltersProps {
   onFilterChange: (filters: FilterState) => void;
@@ -15,6 +15,8 @@ export interface FilterState {
   minRating: number;
   transmission: string[];
   hasCarForTest: boolean | null;
+  femaleInstructorOnly: boolean;
+  lessonObjective: string | null;
 }
 
 const SearchFilters = ({ onFilterChange }: SearchFiltersProps) => {
@@ -24,6 +26,8 @@ const SearchFilters = ({ onFilterChange }: SearchFiltersProps) => {
     minRating: 0,
     transmission: [],
     hasCarForTest: null,
+    femaleInstructorOnly: false,
+    lessonObjective: null,
   });
 
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -58,6 +62,8 @@ const SearchFilters = ({ onFilterChange }: SearchFiltersProps) => {
       minRating: 0,
       transmission: [],
       hasCarForTest: null,
+      femaleInstructorOnly: false,
+      lessonObjective: null,
     };
     setFilters(clearedFilters);
     onFilterChange(clearedFilters);
@@ -65,21 +71,94 @@ const SearchFilters = ({ onFilterChange }: SearchFiltersProps) => {
 
   const FilterContent = () => (
     <div className="space-y-6">
+      {/* Lesson Objective - NEW */}
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <Target className="w-4 h-4 text-primary" />
+          <h4 className="font-display font-semibold">Objetivo da Aula</h4>
+        </div>
+        <div className="space-y-2">
+          {[
+            { value: null, label: "Todos os objetivos" },
+            { value: "habilitacao", label: "Treino para Habilitação (Detran)" },
+            { value: "medo", label: "Habilitados com Medo" },
+          ].map((option) => (
+            <button
+              key={String(option.value)}
+              onClick={() => updateFilter("lessonObjective", option.value)}
+              className={`w-full p-3 rounded-xl border-2 text-left text-sm transition-all ${
+                filters.lessonObjective === option.value
+                  ? "border-primary bg-primary/5 text-foreground"
+                  : "border-border hover:border-primary/50 text-muted-foreground"
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Transmission - Enhanced */}
+      <div>
+        <h4 className="font-display font-semibold mb-3">Tipo de Câmbio</h4>
+        <div className="grid grid-cols-2 gap-2">
+          {["Manual", "Automático"].map((trans) => (
+            <button
+              key={trans}
+              onClick={() => toggleTransmission(trans)}
+              className={`p-3 rounded-xl border-2 text-sm font-medium transition-all ${
+                filters.transmission.includes(trans)
+                  ? "border-primary bg-primary/5 text-foreground"
+                  : "border-border hover:border-primary/50 text-muted-foreground"
+              }`}
+            >
+              {trans}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Female Instructor Preference - NEW */}
+      <div className="p-4 rounded-xl bg-muted/50 border border-border">
+        <div className="flex items-center gap-3">
+          <Checkbox
+            id="female-instructor"
+            checked={filters.femaleInstructorOnly}
+            onCheckedChange={(checked) =>
+              updateFilter("femaleInstructorOnly", checked === true)
+            }
+          />
+          <div className="flex-1">
+          <Label
+              htmlFor="female-instructor"
+              className="text-sm font-medium cursor-pointer flex items-center gap-2"
+            >
+              <Heart className="w-4 h-4 text-primary" />
+              Apenas Instrutoras Mulheres
+            </Label>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Ideal para alunas que preferem
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Categories */}
       <div>
         <h4 className="font-display font-semibold mb-3">Categoria CNH</h4>
-        <div className="space-y-2">
+        <div className="grid grid-cols-3 gap-2">
           {["A", "B", "AB", "C", "D", "E"].map((cat) => (
-            <div key={cat} className="flex items-center gap-2">
-              <Checkbox
-                id={`cat-${cat}`}
-                checked={filters.categories.includes(cat)}
-                onCheckedChange={() => toggleCategory(cat)}
-              />
-              <Label htmlFor={`cat-${cat}`} className="text-sm cursor-pointer">
-                Categoria {cat}
-              </Label>
-            </div>
+            <button
+              key={cat}
+              onClick={() => toggleCategory(cat)}
+              className={`p-2 rounded-lg border-2 text-sm font-medium transition-all ${
+                filters.categories.includes(cat)
+                  ? "border-primary bg-primary/5 text-foreground"
+                  : "border-border hover:border-primary/50 text-muted-foreground"
+              }`}
+            >
+              {cat}
+            </button>
           ))}
         </div>
       </div>
@@ -119,25 +198,6 @@ const SearchFilters = ({ onFilterChange }: SearchFiltersProps) => {
             >
               {rating === 0 ? "Todas" : `${rating}+`}
             </Button>
-          ))}
-        </div>
-      </div>
-
-      {/* Transmission */}
-      <div>
-        <h4 className="font-display font-semibold mb-3">Tipo de câmbio</h4>
-        <div className="space-y-2">
-          {["Manual", "Automático"].map((trans) => (
-            <div key={trans} className="flex items-center gap-2">
-              <Checkbox
-                id={`trans-${trans}`}
-                checked={filters.transmission.includes(trans)}
-                onCheckedChange={() => toggleTransmission(trans)}
-              />
-              <Label htmlFor={`trans-${trans}`} className="text-sm cursor-pointer">
-                {trans}
-              </Label>
-            </div>
           ))}
         </div>
       </div>

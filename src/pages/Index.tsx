@@ -1,36 +1,9 @@
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import HeroSection from "@/components/home/HeroSection";
-import HowItWorksSection from "@/components/home/HowItWorksSection";
-import TrustSignalsSection from "@/components/home/TrustSignalsSection";
-import TestimonialsSection from "@/components/home/TestimonialsSection";
-import CTASection from "@/components/home/CTASection";
-import { Helmet } from "react-helmet";
+import { Navigate } from "react-router-dom";
 
+// This file now just redirects to the new SplashPage
+// Keeping for backwards compatibility
 const Index = () => {
-  return (
-    <>
-      <Helmet>
-        <title>Dirija.ja - Encontre Instrutores de Direção Qualificados</title>
-        <meta 
-          name="description" 
-          content="Conectamos você com instrutores de direção qualificados e experientes. Agende aulas práticas e conquiste sua CNH com confiança!" 
-        />
-      </Helmet>
-      
-      <div className="min-h-screen">
-        <Header />
-        <main>
-          <HeroSection />
-          <TrustSignalsSection />
-          <HowItWorksSection />
-          <TestimonialsSection />
-          <CTASection />
-        </main>
-        <Footer />
-      </div>
-    </>
-  );
+  return <Navigate to="/" replace />;
 };
 
 export default Index;

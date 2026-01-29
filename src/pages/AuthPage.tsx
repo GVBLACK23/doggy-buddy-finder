@@ -8,11 +8,16 @@ import { Car, Mail, Lock, User, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet";
+import { Database } from "@/integrations/supabase/types";
+
+type AppRole = Database["public"]["Enums"]["app_role"];
 
 const AuthPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const roleParam = searchParams.get("role") as "student" | "instructor" | null;
 
   const [activeTab, setActiveTab] = useState(
     searchParams.get("mode") === "signup" ? "signup" : "login"
@@ -29,34 +34,60 @@ const AuthPage = () => {
   const [signupPassword, setSignupPassword] = useState("");
   const [signupConfirmPassword, setSignupConfirmPassword] = useState("");
 
+  const redirectBasedOnRole = async (userId: string) => {
+    try {
+      const { data: roleData } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      if (roleData?.role === "instructor") {
+        navigate("/dashboard-instrutor");
+      } else if (roleData?.role === "student") {
+        navigate("/home");
+      } else {
+        // No role found, redirect based on URL param or default to student
+        if (roleParam === "instructor") {
+          navigate("/cadastro-instrutor");
+        } else {
+          navigate("/home");
+        }
+      }
+    } catch (error) {
+      console.error("Error checking role:", error);
+      navigate("/home");
+    }
+  };
+
   useEffect(() => {
     // Check if user is already logged in
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        navigate("/");
+        await redirectBasedOnRole(session.user.id);
       }
     };
     checkUser();
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         if (session) {
-          navigate("/");
+          await redirectBasedOnRole(session.user.id);
         }
       }
     );
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, roleParam]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: loginEmail,
         password: loginPassword,
       });
@@ -69,6 +100,8 @@ const AuthPage = () => {
             : error.message,
           variant: "destructive",
         });
+      } else if (data.user) {
+        // Redirect will happen via onAuthStateChange
       }
     } catch (error) {
       toast({
@@ -108,7 +141,7 @@ const AuthPage = () => {
     try {
       const redirectUrl = `${window.location.origin}/`;
 
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: signupEmail,
         password: signupPassword,
         options: {
@@ -133,7 +166,15 @@ const AuthPage = () => {
             variant: "destructive",
           });
         }
-      } else {
+      } else if (data.user) {
+        // Create role for student
+        if (roleParam === "student" || !roleParam) {
+          await supabase.from("user_roles").insert({
+            user_id: data.user.id,
+            role: "student" as AppRole,
+          });
+        }
+
         toast({
           title: "Conta criada com sucesso!",
           description: "Você já pode começar a usar o Dirija.ja",

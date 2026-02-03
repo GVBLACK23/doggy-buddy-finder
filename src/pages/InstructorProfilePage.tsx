@@ -13,7 +13,7 @@ import {
   Car,
   Clock,
   Award,
-  MessageSquare,
+  MessageCircle,
   ChevronLeft,
   Check,
   Sparkles,
@@ -25,6 +25,7 @@ import {
 import { Helmet } from "react-helmet";
 import PraiseTags from "@/components/instructor/PraiseTags";
 import TrustBadges from "@/components/instructor/TrustBadges";
+import { getWhatsAppLink } from "@/components/instructor/WhatsAppInput";
 
 // Mock data - will be replaced with real data
 const mockInstructor = {
@@ -34,7 +35,9 @@ const mockInstructor = {
   rating: 4.9,
   reviewCount: 127,
   pricePerHour: 85,
+  pricePackage: 680,
   trialPrice: 49,
+  whatsapp: "(11) 99999-9999",
   categories: ["B"],
   transmission: "Manual",
   hasCarForTest: true,
@@ -423,10 +426,19 @@ const InstructorProfilePage = () => {
                     </div>
                   </div>
 
-                  <Button variant="outline" className="w-full mt-3">
-                    <MessageSquare className="w-4 h-4 mr-2" />
-                    Enviar mensagem
-                  </Button>
+                  <a
+                    href={getWhatsAppLink(
+                      instructor.whatsapp,
+                      `Olá, vi seu perfil na Dirija.ja e quero saber sobre aulas.`
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button variant="outline" className="w-full mt-3 bg-success hover:bg-success/90 text-success-foreground border-success hover:border-success/90">
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      Agendar via WhatsApp
+                    </Button>
+                  </a>
                 </div>
               </div>
             </div>

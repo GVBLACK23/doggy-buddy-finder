@@ -14,54 +14,200 @@ export type Database = {
   }
   public: {
     Tables: {
+      bookings: {
+        Row: {
+          created_at: string
+          duration_minutes: number | null
+          id: string
+          instructor_id: string
+          lesson_date: string
+          location: string | null
+          notes: string | null
+          price: number | null
+          status: string
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          duration_minutes?: number | null
+          id?: string
+          instructor_id: string
+          lesson_date: string
+          location?: string | null
+          notes?: string | null
+          price?: number | null
+          status?: string
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          duration_minutes?: number | null
+          id?: string
+          instructor_id?: string
+          lesson_date?: string
+          location?: string | null
+          notes?: string | null
+          price?: number | null
+          status?: string
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       instructor_registrations: {
         Row: {
+          address: string | null
+          bio: string | null
           birth_date: string
+          cep: string | null
           cpf: string
           created_at: string
           full_name: string
           has_own_vehicle: boolean
           id: string
           instructor_license_number: string
+          latitude: number | null
           license_photo_url: string | null
+          longitude: number | null
+          price_package: number | null
+          price_single: number | null
           profile_photo_url: string | null
           status: string
           transmission_type: string | null
           updated_at: string
           user_id: string
+          whatsapp: string | null
           years_of_experience: string
         }
         Insert: {
+          address?: string | null
+          bio?: string | null
           birth_date: string
+          cep?: string | null
           cpf: string
           created_at?: string
           full_name: string
           has_own_vehicle?: boolean
           id?: string
           instructor_license_number: string
+          latitude?: number | null
           license_photo_url?: string | null
+          longitude?: number | null
+          price_package?: number | null
+          price_single?: number | null
           profile_photo_url?: string | null
           status?: string
           transmission_type?: string | null
           updated_at?: string
           user_id: string
+          whatsapp?: string | null
           years_of_experience: string
         }
         Update: {
+          address?: string | null
+          bio?: string | null
           birth_date?: string
+          cep?: string | null
           cpf?: string
           created_at?: string
           full_name?: string
           has_own_vehicle?: boolean
           id?: string
           instructor_license_number?: string
+          latitude?: number | null
           license_photo_url?: string | null
+          longitude?: number | null
+          price_package?: number | null
+          price_single?: number | null
           profile_photo_url?: string | null
           status?: string
           transmission_type?: string | null
           updated_at?: string
           user_id?: string
+          whatsapp?: string | null
           years_of_experience?: string
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          booking_id: string
+          comment: string | null
+          created_at: string
+          id: string
+          instructor_id: string
+          praise_tags: string[] | null
+          rating: number
+          student_id: string
+        }
+        Insert: {
+          booking_id: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          instructor_id: string
+          praise_tags?: string[] | null
+          rating: number
+          student_id: string
+        }
+        Update: {
+          booking_id?: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          instructor_id?: string
+          praise_tags?: string[] | null
+          rating?: number
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_profiles: {
+        Row: {
+          address: string | null
+          cep: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          updated_at: string
+          user_id: string
+          whatsapp: string | null
+        }
+        Insert: {
+          address?: string | null
+          cep?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          updated_at?: string
+          user_id: string
+          whatsapp?: string | null
+        }
+        Update: {
+          address?: string | null
+          cep?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          updated_at?: string
+          user_id?: string
+          whatsapp?: string | null
         }
         Relationships: []
       }
@@ -91,6 +237,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_review_instructor: {
+        Args: { _instructor_id: string; _student_id: string }
+        Returns: boolean
+      }
+      get_instructor_rating: {
+        Args: { _instructor_id: string }
+        Returns: {
+          average_rating: number
+          review_count: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

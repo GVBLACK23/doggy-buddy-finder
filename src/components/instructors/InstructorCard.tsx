@@ -17,12 +17,14 @@ export interface InstructorCardProps {
   rating: number;
   reviewCount: number;
   pricePerHour: number;
+  pricePackage?: number;
   categories: string[];
   transmission: string;
   hasCarForTest: boolean;
   verified: boolean;
   avatar: string;
   experience: number;
+  whatsapp?: string;
   // New vehicle fields
   vehicleName?: string;
   vehicleYear?: number;
@@ -40,6 +42,7 @@ const InstructorCard = ({
   rating,
   reviewCount,
   pricePerHour,
+  pricePackage,
   categories,
   transmission,
   hasCarForTest,
@@ -138,6 +141,11 @@ const InstructorCard = ({
                   R$ {pricePerHour}
                 </p>
                 <p className="text-xs text-muted-foreground">/aula</p>
+                {pricePackage && (
+                  <p className="text-xs text-success font-medium">
+                    10 aulas: R$ {pricePackage}
+                  </p>
+                )}
               </div>
             </div>
 

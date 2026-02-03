@@ -71,6 +71,10 @@ export default {
           darker: "hsl(var(--green-darker))",
           light: "hsl(var(--green-light))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

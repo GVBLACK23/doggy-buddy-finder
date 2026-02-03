@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { z } from "zod";
-import { Car, ArrowLeft, Loader2 } from "lucide-react";
+import { Car, ArrowLeft, Loader2, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +17,8 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import CPFInput from "@/components/instructor/CPFInput";
+import CEPInput, { AddressData } from "@/components/instructor/CEPInput";
+import WhatsAppInput from "@/components/instructor/WhatsAppInput";
 import PhotoUpload from "@/components/instructor/PhotoUpload";
 
 const registrationSchema = z.object({
@@ -28,6 +30,8 @@ const registrationSchema = z.object({
     const age = today.getFullYear() - birth.getFullYear();
     return age >= 21;
   }, "Você deve ter pelo menos 21 anos"),
+  whatsapp: z.string().min(14, "WhatsApp inválido"),
+  cep: z.string().min(9, "CEP inválido"),
   yearsOfExperience: z.string().min(1, "Selecione o tempo de experiência"),
   instructorLicenseNumber: z.string().length(6, "Registro deve ter 6 dígitos"),
   hasOwnVehicle: z.enum(["yes", "no"]),
@@ -49,6 +53,9 @@ const InstructorRegistrationPage = () => {
   const [cpf, setCpf] = useState("");
   const [fullName, setFullName] = useState("");
   const [birthDate, setBirthDate] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [cep, setCep] = useState("");
+  const [address, setAddress] = useState("");
   const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
   const [yearsOfExperience, setYearsOfExperience] = useState("");
   const [instructorLicenseNumber, setInstructorLicenseNumber] = useState("");
@@ -58,6 +65,10 @@ const InstructorRegistrationPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handleAddressFound = (addressData: AddressData) => {
+    setAddress(addressData.fullAddress);
+  };
 
   useEffect(() => {
     // Check if user is already logged in
@@ -95,6 +106,8 @@ const InstructorRegistrationPage = () => {
         cpf,
         fullName,
         birthDate,
+        whatsapp,
+        cep,
         yearsOfExperience,
         instructorLicenseNumber,
         hasOwnVehicle,
@@ -172,6 +185,9 @@ const InstructorRegistrationPage = () => {
           cpf: cpf.replace(/\D/g, ""),
           full_name: fullName,
           birth_date: birthDate,
+          whatsapp,
+          cep: cep.replace(/\D/g, ""),
+          address,
           profile_photo_url: profilePhotoUrl,
           years_of_experience: yearsOfExperience,
           instructor_license_number: instructorLicenseNumber,
@@ -299,6 +315,37 @@ const InstructorRegistrationPage = () => {
                     required
                   />
                 </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="whatsapp">WhatsApp</Label>
+                  <WhatsAppInput
+                    id="whatsapp"
+                    value={whatsapp}
+                    onChange={setWhatsapp}
+                    required
+                  />
+                </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="cep">CEP</Label>
+                  <CEPInput
+                    id="cep"
+                    value={cep}
+                    onChange={setCep}
+                    onAddressFound={handleAddressFound}
+                    required
+                  />
+                </div>
+
+                {address && (
+                  <div className="grid gap-2">
+                    <Label>Endereço</Label>
+                    <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg text-sm text-muted-foreground">
+                      <MapPin className="w-4 h-4 flex-shrink-0" />
+                      {address}
+                    </div>
+                  </div>
+                )}
 
                 <PhotoUpload
                   label="Foto de Perfil"

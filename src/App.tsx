@@ -13,6 +13,7 @@ import AuthPage from "./pages/AuthPage";
 import ProfileSelectionPage from "./pages/ProfileSelectionPage";
 import InstructorRegistrationPage from "./pages/InstructorRegistrationPage";
 import InstructorDashboardPage from "./pages/InstructorDashboardPage";
+import InstructorSettingsPage from "./pages/InstructorSettingsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -65,6 +66,14 @@ const App = () => (
               element={
                 <ProtectedRoute allowedRoles={["instructor"]}>
                   <InstructorDashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/configuracoes-instrutor"
+              element={
+                <ProtectedRoute allowedRoles={["instructor"]}>
+                  <InstructorSettingsPage />
                 </ProtectedRoute>
               }
             />

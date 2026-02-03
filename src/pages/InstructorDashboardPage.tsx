@@ -12,6 +12,7 @@ import {
   LogOut,
   TrendingUp,
   Users,
+  Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -130,6 +131,15 @@ const InstructorDashboardPage = () => {
                 <span className="text-sm text-secondary-foreground/70 hidden md:block">
                   Olá, {user?.user_metadata?.full_name || "Instrutor"}
                 </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate("/configuracoes-instrutor")}
+                  className="text-secondary-foreground/70 hover:text-secondary-foreground"
+                >
+                  <Settings className="w-4 h-4 mr-2" />
+                  Meus Dados
+                </Button>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -305,7 +315,7 @@ const InstructorDashboardPage = () => {
 
                         <Button
                           size="sm"
-                          className="bg-green-600 hover:bg-green-700 text-white flex-shrink-0"
+                          className="bg-success hover:bg-success/90 text-success-foreground flex-shrink-0"
                           onClick={() =>
                             openWhatsApp(lesson.student.phone, lesson.student.name)
                           }

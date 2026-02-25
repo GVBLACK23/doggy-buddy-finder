@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Car, Mail, Lock, User, ArrowLeft } from "lucide-react";
+import { Car, Mail, Lock, User, ArrowLeft, Phone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import WhatsAppInput from "@/components/instructor/WhatsAppInput";
 import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet";
 import { Database } from "@/integrations/supabase/types";
@@ -33,6 +34,7 @@ const AuthPage = () => {
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
   const [signupConfirmPassword, setSignupConfirmPassword] = useState("");
+  const [signupWhatsApp, setSignupWhatsApp] = useState("");
 
   const redirectBasedOnRole = async (userId: string) => {
     try {
@@ -172,6 +174,11 @@ const AuthPage = () => {
           await supabase.from("user_roles").insert({
             user_id: data.user.id,
             role: "student" as AppRole,
+          });
+          await supabase.from("student_profiles").insert({
+            user_id: data.user.id,
+            full_name: signupName,
+            whatsapp: signupWhatsApp,
           });
         }
 
@@ -325,6 +332,22 @@ const AuthPage = () => {
                       />
                     </div>
                   </div>
+
+                  {(!roleParam || roleParam === "student") && (
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-whatsapp">Telefone (WhatsApp)</Label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <WhatsAppInput
+                          id="signup-whatsapp"
+                          value={signupWhatsApp}
+                          onChange={setSignupWhatsApp}
+                          required
+                          className="pl-10"
+                        />
+                      </div>
+                    </div>
+                  )}
 
                   <div className="space-y-2">
                     <Label htmlFor="signup-password">Senha</Label>

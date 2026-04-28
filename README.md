@@ -20,14 +20,23 @@ Siga os passos abaixo:
 
 **1. Clone o repositório:**
 ```sh
-git clone [https://github.com/SEU_USUARIO/dirija-ja.git](https://github.com/SEU_USUARIO/dirija-ja.git)
+git clone [https://github.com/SEU_USUARIO/dirija-ja.git](https://github.com/SEU_USUARIO/dirija-ja.git) 
+
+2 navegue até o diretório principal do projeto 
+cd dirija-ja 
+ 
+3 instale as dependências 
+npm install 
+ 
+4 inicie o servidor de desenvolvimento  
+npm run Dev 
 
 ## Quais as tecnologias usadas no projeto?
 
 Th
 - TypeScript
 - React
-- shadcn-ui
+- shadcn-ui 
 - Tailwind CSS
 
 
